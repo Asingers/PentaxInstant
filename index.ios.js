@@ -12,35 +12,45 @@ import {
   Image,
   Text,
   View,
-  CameraRoll,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity,
+  CameraRoll
 } from 'react-native';
+import PhotoGrid from 'react-native-photo-grid';
 
 export default class PentaxInstant extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      photosJSON: {},
+      //camera: 'tbd',
+      dirs: {},
+      photos: {},
       isLoading: true
     }
   }
 
   componentDidMount() {
-    this.fetchPhotosJSON();
+    this.fetchPhotosList();
   }
 
-  fetchPhotosJSON() {
-    console.log('fetchPhotosJSON');
+  fetchPhotosList() {
+    console.log('fetchPhotosList');
 
     var url = 'http://localhost:8000/v1/photos';
     fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
         console.log('jsonData', jsonData);
+        let photos = Array.apply(null, jsonData.dirs).reduce((dirs, dir) => {
+          return dirs.concat(Array.apply(null, dir.files).reduce((files, b) => {
+            return files.concat({ id: b, src: url+'/'+dir.name+'/'+b });
+          }, []));
+        }, []);
 
         this.setState({
           isLoading: false,
-          photosJSON: jsonData.dirs
+          dirs: jsonData.dirs,
+          photos: photos,
         });
       })
     .catch( error => console.log('Fetch error ' + error) );
@@ -68,20 +78,42 @@ export default class PentaxInstant extends Component {
   }
 
   renderResults() {
-    var {photosJSON, isLoading} = this.state;
-    console.log('photosJSON',photosJSON);
+    var {photos, isLoading} = this.state;
+    console.log('photos', photos);
     return (
-      <View>
-        {photosJSON.map((folder, index) => {
-          return(
-            <Text key={index}>
-              {folder.name}
-            </Text>
-          );
-        })}
-      </View>
+      <PhotoGrid style={ styles.photoContainer }
+        data = { photos }
+        itemsPerRow = { 3 }
+        itemMargin = { 1 }
+        renderHeader = { this.renderHeader }
+        renderItem = { this.renderPhotoPreview }
+      ></PhotoGrid>
     );
   }
+
+  renderHeader() {
+    return (
+      <Text style={ styles.appHeader }>Pentax Photos</Text>
+    );
+  }
+
+  renderPhotoPreview(item, itemSize) {
+    return(
+      <TouchableOpacity
+        key = { item.id }
+        style = {{ width: itemSize, height: itemSize }}
+        onPress = { () => {
+          // Do Something
+        }}>
+        <Image
+          resizeMode = "cover"
+          style = {{ flex: 1 }}
+          source = {{ uri: item.src }}
+        />
+      </TouchableOpacity>
+    )
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -91,6 +123,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000'
+  },
+  appHeader: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  photoContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
