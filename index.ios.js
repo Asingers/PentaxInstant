@@ -9,13 +9,13 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Image,
   Text,
   View,
   ActivityIndicator,
   TouchableOpacity,
   CameraRoll
 } from 'react-native';
+import Image from 'react-native-image-progress';
 import PhotoGrid from 'react-native-photo-grid';
 
 export default class PentaxInstant extends Component {
@@ -27,6 +27,12 @@ export default class PentaxInstant extends Component {
       photos: {},
       isLoading: true
     }
+    if (__DEV__) {
+      console.log('running in debug mode');
+      this.api = 'http://localhost:8000';
+    } else {
+      this.api = 'http://192.168.0.1';
+    }
   }
 
   componentDidMount() {
@@ -36,7 +42,7 @@ export default class PentaxInstant extends Component {
   fetchPhotosList() {
     console.log('fetchPhotosList');
 
-    var url = 'http://localhost:8000/v1/photos';
+    var url = this.api+'/v1/photos';
     fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
@@ -53,15 +59,24 @@ export default class PentaxInstant extends Component {
           photos: photos,
         });
       })
-    .catch( error => console.log('Fetch error ' + error) );
+    .catch( error => {
+      console.log('Fetch error ' + error)
+      this.setState({
+          isLoading: false,
+          isError: true
+        });
+    });
   }
 
   render() {
-    var {isLoading} = this.state;
+    var {isLoading, isError} = this.state;
     if(isLoading)
       return this.renderLoadingMessage();
     else
-      return this.renderResults();
+      if (isError)
+        return this.renderErrorMessage();
+      else
+        return this.renderResults();
   }
 
   renderLoadingMessage() {
@@ -73,6 +88,14 @@ export default class PentaxInstant extends Component {
             size={'small'} 
             style={{margin: 15}} />
             <Text style={{color: '#fff'}}>Contacting Camera</Text>
+      </View>
+    );
+  }
+
+  renderErrorMessage() {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={{color: 'red'}}>Unable to Contact Camera</Text>
       </View>
     );
   }
@@ -98,6 +121,7 @@ export default class PentaxInstant extends Component {
   }
 
   renderPhotoPreview(item, itemSize) {
+    console.log('renderPhotoPreview', item);
     return(
       <TouchableOpacity
         key = { item.id }
@@ -108,7 +132,10 @@ export default class PentaxInstant extends Component {
         <Image
           resizeMode = "cover"
           style = {{ flex: 1 }}
-          source = {{ uri: item.src }}
+          source = {{
+            uri: item.src,
+            headers: { Range: "bytes=100-200" }
+          }}
         />
       </TouchableOpacity>
     )
