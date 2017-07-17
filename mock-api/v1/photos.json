@@ -1,0 +1,17 @@
+{"errCode": 200,
+ "errMsg": "OK",
+ "dirs": [
+ {
+ "name": "100_0624",
+ "files": [ "IMGP001.DNG"]
+ },
+ {
+ "name": "101_0625",
+ "files": [ "IMGP002.DNG", "IMGP003.DNG"]
+ },
+ {
+ "name": "101_0626",
+ "files": [ "IMGP004.DNG", "IMGP005.DNG", "IMGP006.DNG", "IMGP007.DNG"]
+ }
+ ]
+}
