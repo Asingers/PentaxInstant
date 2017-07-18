@@ -41,7 +41,7 @@ export default class PentaxAPI {
         console.log('jsonData', jsonData);
         let photos = Array.apply(null, jsonData.dirs).reduce((dirs, dir) => {
           return dirs.concat(Array.apply(null, dir.files).reduce((files, b) => {
-            return files.concat({ id: b, src: url+'/'+dir.name+'/'+b });
+            return files.concat({ id: b, src: url+'/'+dir.name+'/'+b+'?size=view' });
           }, []));
         }, []);
 

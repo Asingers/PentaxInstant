@@ -9,7 +9,7 @@ http://192.168.0.1/v1/apis
 in your browser.
 ==API List==
 Here is the List of all possible URLs:
-/v1/photos/:path
+/v1/photos/:path?size={thumb,view,full}
 /v1/photos/:path/info
 /v1/photos/latest/info
 /v1/photos
