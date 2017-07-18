@@ -1,0 +1,35 @@
+{"errCode": 200,
+ "errMsg": "OK",
+ "model": "PENTAX K-1",
+ "firmwareVersion": "01.41",
+ "macAddress": "AC:3F:A4:65:BA:88",
+ "serialNo": "6392716",
+ "channelList": [0,1,2,3,4,5,6,7,8,9,10,11],
+ "hot": false,
+ "battery": 66,
+ "stillFormatList": [ "jpeg", "pef", "rawpef"],
+ "storages" : [
+ {"name":"sd1",
+ "equipped": true,
+ "writable": true,
+ "available": true,
+ "active": true,
+ "format": "jpeg",
+ "reservePriority": "high",
+ "remain": 796
+ }
+,
+ {"name":"sd2",
+ "equipped": true,
+ "writable": true,
+ "available": true,
+ "active": false,
+ "format": "jpeg",
+ "reservePriority": "low",
+ "remain": 191
+ }
+ ],
+ "ssid": "PENTAX_65BA88",
+ "key": "A465BA88",
+ "channel": "6",
+ "slotMode": "reserve"}

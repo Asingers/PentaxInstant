@@ -4,13 +4,13 @@ https://sourceforge.net/p/pentaxks2wifiremote/wiki/K-S2%20WebAPI%20Overview/
 Usualy the IP-Address of the camera is 
 192.168.0.1
 ==URLs==
-The possible urls, the camera will recognise, are displayed in Json Format by typing the URL
-http://192.168.0.1//v1/apis
+The possible urls the camera will recognise are displayed in JSON Format by typing the URL
+http://192.168.0.1/v1/apis
 in your browser.
 ==API List==
 Here is the List of all possible URLs:
-/v1/photos/path
-/v1/photos/path/info
+/v1/photos/:path
+/v1/photos/:path/info
 /v1/photos/latest/info
 /v1/photos
 /v1/props
