@@ -46,7 +46,7 @@ export default class PhotoList extends Component {
   }
 
   renderPhotoPreview(item, itemSize) {
-    console.log('PhotoList,renderPhotoPreview', item);
+    console.log('PhotoList.renderPhotoPreview', item);
     return(
       <TouchableOpacity
         key = { item.id }

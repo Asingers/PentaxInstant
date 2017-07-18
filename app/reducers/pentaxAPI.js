@@ -15,6 +15,7 @@ export default class PentaxAPI {
         console.log('jsonData', jsonData);
         
         return {
+          isConnected: true,
           camera: {
             model: jsonData.model,
             firmware: jsonData.firmwareVersion
@@ -24,7 +25,7 @@ export default class PentaxAPI {
     .catch( error => {
       console.error('Fetch error ' + error)
       return {
-          isLoading: false,
+          isLoading: true,
           isError: true
         };
     });

@@ -17,6 +17,7 @@ export default class PentaxInstant extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isConnected: false,
       isLoading: true,
       isError: false
     }
@@ -35,7 +36,7 @@ export default class PentaxInstant extends Component {
   
     this.api.cameraInfo().then( (state) => {
       console.log('cameraInfo', state);
-      this.setState(state);
+      return this.setState(state);
     }).then( (state) => {
       return this.api.listPhotos().then( (state) => {
         console.log('listPhotos', state);
@@ -46,13 +47,29 @@ export default class PentaxInstant extends Component {
   }
 
   render() {
-    var {isLoading, isError} = this.state;
-    if (isLoading) 
-      return this.renderLoadingMessage();
+    var {isConnected, isLoading, isError} = this.state;
+    if (!isConnected) 
+      return this.renderContactingMessage();
     if (isError)
       return this.renderConnectFailedMessage();
+    
+    if (isLoading)
+      return this.renderLoadingMessage(this.state.camera);
     else
       return this.photoList.render(this.state);
+  }
+
+  renderContactingMessage() {
+    return (
+      <View style={styles.loadingContainer}>
+          <ActivityIndicator
+            animating={true}
+            color={'#fff'}
+            size={'small'} 
+            style={{margin: 15}} />
+            <Text style={{color: 'white'}}>Contacting Camera</Text>
+      </View>
+    );
   }
 
   renderConnectFailedMessage() {
@@ -77,7 +94,7 @@ export default class PentaxInstant extends Component {
     );
   }
 
-  renderLoadingMessage() {
+  renderLoadingMessage(camera) {
     return (
       <View style={styles.loadingContainer}>
           <ActivityIndicator
@@ -85,7 +102,7 @@ export default class PentaxInstant extends Component {
             color={'#fff'}
             size={'small'} 
             style={{margin: 15}} />
-            <Text style={{color: 'white'}}>Contacting Camera</Text>
+            <Text style={{color: 'white'}}>Connected to {camera.model}</Text>
       </View>
     );
   }
