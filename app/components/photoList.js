@@ -16,8 +16,12 @@ export default class PhotoList extends Component {
     super(props);
   }
 
+  onClick(item) {
+    this.props.onClickItem(item);
+  }
+
   render() {
-    console.log('PhotoList.render', this.props);
+    // console.log('PhotoList.render', this.props);
 
     return (
       <PhotoGrid
@@ -25,33 +29,33 @@ export default class PhotoList extends Component {
         data = { this.props.photos }
         itemsPerRow = { 3 }
         itemMargin = { 1 }
-        renderHeader = { () => this.renderHeader(this.props) }
-        renderItem = { (item, itemSize) => this.renderPhoto(item, itemSize, this.props.onClick) }
+        renderHeader = { () => this.renderHeader(this.props.camera, this.props.photos) }
+        renderItem = { (item, itemSize) => this.renderPhoto(item, itemSize, this.onClickItem) }
       ></PhotoGrid>
     );
   }
 
-  renderHeader(props) {
-    console.log('PhotoList.renderHeader', props);
+  renderHeader(camera, photos) {
+    // console.log('PhotoList.renderHeader', props);
     return (
       <View style={ styles.appHeader }>
-        <Text style={{alignSelf: 'flex-start', color:'white'}}>{props.camera.model}</Text>
-        <Text style={{alignSelf: 'flex-end', color:'white'}}>{props.photos.length | 0} Photos</Text>
+        <Text style={{alignSelf: 'flex-start', color:'white'}}>{camera.model}</Text>
+        <Text style={{alignSelf: 'flex-end', color:'white'}}>{photos.length | 0} Photos</Text>
       </View>
     );
   }
 
-  renderPhoto(item, itemSize, onPress) {
-    console.log('PhotoList.renderPhoto', this);
+  renderPhoto(item, itemSize, onClick) {
+    // console.log('PhotoList.renderPhoto');
     return(
       <TouchableHighlight
         key = { item.id }
         style = {{ width: itemSize, height: itemSize }}
-        onPress = { () => onPress(item) }>
+        onPress = { () => { this.onClick(item) } }>
         <Image
           resizeMode = "cover"
           style = {{ flex: 1 }}
-          source = {{ uri: item.thumb }}
+          source = {{ uri: item.thumb, cache: 'reload' }}
         />
       </TouchableHighlight>
     )

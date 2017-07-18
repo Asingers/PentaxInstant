@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   appContainer: {
     backgroundColor: 'black',
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
@@ -22,7 +22,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   photoContainer: {
-
+    flex: 1,
+    position: 'absolute',
+    bottom: 0,
+  },
+  fullscreenImage: {
+    flex: 1,
+    alignSelf: 'stretch',
+    width: null,
+    height: null,
   }
 });
 export default styles;

@@ -6,14 +6,13 @@ export default class PentaxAPI {
   }
 
   cameraInfo() {
-    console.log('PentaxAPI.cameraInfo');
+    // console.log('PentaxAPI.cameraInfo');
 
     var url = this.api+'/v1/props/device';
     return fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
-        console.log('jsonData', jsonData);
-        
+
         return {
           loading: false,
           camera: {
@@ -32,13 +31,12 @@ export default class PentaxAPI {
   }
 
   listPhotos() {
-    console.log('PentaxAPI.listPhotos');
+    // console.log('PentaxAPI.listPhotos');
 
     var url = this.api+'/v1/photos';
     return fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
-        console.log('jsonData', jsonData);
         let photos = Array.apply(null, jsonData.dirs).reduce((dirs, dir) => {
           return dirs.concat(Array.apply(null, dir.files).reduce((files, file) => {
             let path = url+'/'+dir.name+'/'+file;
@@ -68,15 +66,14 @@ export default class PentaxAPI {
   }
 
   infoPhoto(id) {
-    console.log('PentaxAPI.infoPhoto');
+    // console.log('PentaxAPI.infoPhoto');
 
     var url = this.api+'/v1/photos/'+id+'/info';
     return fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
-        console.log(jsonData);
         return {
-          infoPhoto: jsonData
+          infoPhoto: jsonData,
         };
       })
     .catch( error => {
@@ -89,7 +86,7 @@ export default class PentaxAPI {
   }
 
   downloadPhoto(id) {
-    console.log('PentaxAPI.downloadPhoto');
+    // console.log('PentaxAPI.downloadPhoto');
 
     var url = this.api+'/v1/photos/'+id+'?size=full';
     return fetch(url)
