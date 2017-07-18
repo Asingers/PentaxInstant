@@ -22,7 +22,7 @@ export default class PentaxInstant extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //camera: 'tbd',
+      camera: {},
       dirs: {},
       photos: {},
       isLoading: true
@@ -36,14 +36,41 @@ export default class PentaxInstant extends Component {
   }
 
   componentDidMount() {
-    this.fetchPhotosList();
+    this.fetchCameraInfo().then( (value) => {
+      return this.fetchPhotosList();
+    })
+  }
+
+  fetchCameraInfo() {
+    console.log('fetchCameraInfo');
+
+    var url = this.api+'/v1/props/device';
+    return fetch(url)
+      .then( response => response.json() )
+      .then( jsonData => {
+        console.log('jsonData', jsonData);
+        
+        return this.setState({
+          camera: {
+            model: jsonData.model,
+            firmware: jsonData.firmwareVersion
+          }
+        });
+      })
+    .catch( error => {
+      console.error('Fetch error ' + error)
+      return this.setState({
+          isLoading: false,
+          isError: true
+        });
+    });
   }
 
   fetchPhotosList() {
     console.log('fetchPhotosList');
 
     var url = this.api+'/v1/photos';
-    fetch(url)
+    return fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
         console.log('jsonData', jsonData);
@@ -53,15 +80,15 @@ export default class PentaxInstant extends Component {
           }, []));
         }, []);
 
-        this.setState({
+        return this.setState({
           isLoading: false,
           dirs: jsonData.dirs,
           photos: photos,
         });
       })
     .catch( error => {
-      console.log('Fetch error ' + error)
-      this.setState({
+      console.error('Fetch error ' + error)
+      return this.setState({
           isLoading: false,
           isError: true
         });
@@ -115,22 +142,24 @@ export default class PentaxInstant extends Component {
   }
 
   renderResults() {
-    var {photos, isLoading} = this.state;
-    console.log('photos', photos);
+    console.log('renderResults', this.state);
     return (
       <PhotoGrid style={ styles.photoContainer }
-        data = { photos }
+        data = { this.state.photos }
         itemsPerRow = { 3 }
         itemMargin = { 1 }
-        renderHeader = { this.renderHeader }
+        renderHeader = { () => this.renderHeader(this.state) }
         renderItem = { this.renderPhotoPreview }
       ></PhotoGrid>
     );
   }
 
-  renderHeader() {
+  renderHeader(state) {
     return (
-      <Text style={ styles.appHeader }>Pentax Photos</Text>
+      <View style={ styles.appHeader }>
+        <Text style={{alignSelf: 'flex-start'}}>{state.camera.model}</Text>
+        <Text style={{alignSelf: 'flex-end'}}>{state.photos.length} Photos</Text>
+      </View>
     );
   }
 
@@ -167,9 +196,10 @@ const styles = StyleSheet.create({
   },
   appHeader: {
     marginTop: 20,
+    marginLeft: 7,
+    marginRight: 7,
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   photoContainer: {
     flex: 1,
