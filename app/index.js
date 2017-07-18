@@ -6,10 +6,10 @@ import {
   View,
 } from 'react-native';
 
-import PentaxAPI from './reducers/pentaxAPI';
+
+import PentaxAPI from './lib/pentaxAPI';
 import LoadingScreen from './components/loadingScreen';
-import PhotoList from './components/photoList';
-import PhotoView from './components/photoView';
+import CameraBrowser from './components/cameraBrowser';
 import styles from './styles';
 
 export default class PentaxInstant extends Component {
@@ -61,35 +61,23 @@ export default class PentaxInstant extends Component {
 
   render() {
     // console.log('app.render', this.state);
-
-    if (this.state.showSplash) {
+    if (this.state.loading) {
       return (
-        <View style={styles.appContainer}>
-          <View style={styles.appHeader}>
-            <Text style={{color: 'white'}}>PentaxInstant</Text>
-          </View>
-        </View>
+        <LoadingScreen style={styles.splashContainer}
+            loading={this.state.loading}>
+        </LoadingScreen>
       );
     } else {
       return (
         <View style={styles.appContainer}>
-          <LoadingScreen style={styles.splashContainer}
-            loading={this.state.loading}>
-          </LoadingScreen>
-          <PhotoList
+          <CameraBrowser
             photos={this.state.photos}
             dirs={this.state.dirs}
             camera={this.state.camera}
             onClickItem={this.showPhotoInfo.bind(this)}>
-          </PhotoList>
-          <PhotoView style={ styles.photoContainer }
-            infoPhoto={this.state.infoPhoto}
-            viewPhoto={this.state.viewPhoto}
-          ></PhotoView>
+          </CameraBrowser>
         </View>
-        
       )
     }
   }
-
 }
