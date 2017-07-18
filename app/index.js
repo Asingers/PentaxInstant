@@ -16,56 +16,79 @@ export default class PentaxInstant extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSplash: true
+      showSplash: true,
+      loading: '',
+      camera: {},
+      photos: [],
+      dirs: [],
+      infoPhoto: {},
+      viewPhoto: {},
+      downloadLink: ''
     }
 
     if (__DEV__) {
       console.log('running in debug mode');
-      this.api = new PentaxAPI('http://localhost:8000');
+      window.api = new PentaxAPI('http://localhost:8000');
     } else {
-      this.api = new PentaxAPI('http://192.168.0.1');
+      window.api = new PentaxAPI('http://192.168.0.1');
     }
-  }
-
-  componentWillMount() {
-    this.loadingScreen = new LoadingScreen();
-    this.photoList = new PhotoList();
-    this.photoView = new PhotoView();
   }
 
   componentDidMount() {
     console.log('app.didMount', this.state);
 
-    this.api.cameraInfo().then( (state) => {
+    window.api.cameraInfo().then( (state) => {
       console.log('cameraInfo', state);
-      console.log('remove splash')
-      return this.setState({showSplash: false});
+      state.showSplash = false;
+      return this.setState(state);
     }).then( (state) => {
-      return this.api.listPhotos().then( (state) => {
+      return window.api.listPhotos().then( (state) => {
         console.log('listPhotos', state);
         return this.setState(state);
       })
     })
   }
 
-  componentDidUpdate() {
-    console.log('app.didUpdate', this);
-    this.loadingScreen.setState(this.state);
-    this.photoList.setState(this.state);
+  showPhotoInfo(photo) {
+    console.log('showPhotoInfo', photo, this);
+    window.api.infoPhoto(photo.id).then( (state) => {
+      console.log('infoPhoto', state);
+      state.showSplash = false;
+      // this is not set to the app after onPress callback
+      // WTF?
+      return this.setState(state);
+    })
   }
 
   render() {
     console.log('app.render', this.state);
-    // this.photoList.render();
-    // this.photoView.render();
 
-    var {showSplash} = this.state;
-    if (showSplash) {
-      return (<View style={styles.loadingContainer}>
-        <Text style={{color: 'white'}}>PentaxInstant</Text>
-      </View>);
+    if (this.state.showSplash) {
+      return (
+        <View style={styles.appContainer}>
+          <View style={styles.appHeader}>
+            <Text style={{color: 'white'}}>PentaxInstant</Text>
+          </View>
+        </View>
+      );
     } else {
-      return this.loadingScreen.render();
+      return (
+        <View style={styles.appContainer}>
+          <LoadingScreen style={styles.splashContainer}
+            loading={this.state.loading}>
+          </LoadingScreen>
+          <PhotoList
+            photos={this.state.photos}
+            dirs={this.state.dirs}
+            camera={this.state.camera}
+            onClick={this.showPhotoInfo}>
+          </PhotoList>
+          <PhotoView
+            infoPhoto={this.state.infoPhoto}
+            viewPhoto={this.state.viewPhoto}
+          ></PhotoView>
+        </View>
+      )
     }
   }
 

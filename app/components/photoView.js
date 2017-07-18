@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   ActivityIndicator,
   CameraRoll
@@ -13,21 +12,17 @@ import styles from '../styles';
 export default class PhotoView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-        info: {},
-        photo: {}
-    }
   }
 
   render() {
     console.log('PhotoView.render');
-    var {info, photo} = this.state;
+    var {infoPhoto, viewPhoto} = this.props;
     return (
-        <View style={ styles.photoContainer } ref="PhotoView">
+        <View style={ styles.photoContainer }>
           <Image
             resizeMode = "cover"
             style = {{ flex: 1 }}
-            source = {{ uri: photo.view }}
+            source = {{ uri: viewPhoto.view }}
           />
         </View>
       );

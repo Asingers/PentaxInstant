@@ -14,50 +14,40 @@ import styles from '../styles';
 export default class PhotoList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      camera: {},
-      dirs: [],
-      photos: [],
-      showItem: false
-    }
   }
 
   render() {
-    console.log('PhotoList.render');
-    var {photos, camera} = this.state;
-    console.log(photos, camera);
+    console.log('PhotoList.render', this.props);
 
     return (
-      <PhotoGrid ref="PhotoList"
+      <PhotoGrid
         style={ styles.photoContainer }
-        data = { photos }
+        data = { this.props.photos }
         itemsPerRow = { 3 }
         itemMargin = { 1 }
-        renderHeader = { () => this.renderHeader(camera, photos.length) }
-        renderItem = { this.renderPhoto }
-        setState = { this.setState }
+        renderHeader = { () => this.renderHeader(this.props) }
+        renderItem = { (item, itemSize) => this.renderPhoto(item, itemSize, this.props.onClick) }
       ></PhotoGrid>
     );
   }
 
-  renderHeader(camera, num_photos) {
+  renderHeader(props) {
+    console.log('PhotoList.renderHeader', props);
     return (
       <View style={ styles.appHeader }>
-        <Text style={{alignSelf: 'flex-start'}}>{camera.model}</Text>
-        <Text style={{alignSelf: 'flex-end'}}>{num_photos} Photos</Text>
+        <Text style={{alignSelf: 'flex-start', color:'white'}}>{props.camera.model}</Text>
+        <Text style={{alignSelf: 'flex-end', color:'white'}}>{props.photos.length | 0} Photos</Text>
       </View>
     );
   }
 
-  renderPhoto(item, itemSize) {
-    console.log('PhotoList.renderPhoto', item);
+  renderPhoto(item, itemSize, onPress) {
+    console.log('PhotoList.renderPhoto', this);
     return(
       <TouchableHighlight
         key = { item.id }
         style = {{ width: itemSize, height: itemSize }}
-        onPress = { () => {
-          this.setState({showItem: item});
-        }}>
+        onPress = { () => onPress(item) }>
         <Image
           resizeMode = "cover"
           style = {{ flex: 1 }}

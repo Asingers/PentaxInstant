@@ -3,12 +3,16 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
-  loadingContainer: {
+  appContainer: {
+    backgroundColor: 'black',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  splashContainer: {
+    flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#000'
   },
   appHeader: {
     marginTop: 20,
@@ -18,10 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   photoContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+
   }
 });
 export default styles;

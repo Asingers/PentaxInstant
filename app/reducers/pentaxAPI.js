@@ -15,7 +15,7 @@ export default class PentaxAPI {
         console.log('jsonData', jsonData);
         
         return {
-          isConnected: true,
+          loading: false,
           camera: {
             model: jsonData.model,
             firmware: jsonData.firmwareVersion
@@ -25,8 +25,8 @@ export default class PentaxAPI {
     .catch( error => {
       console.error('Fetch error ' + error)
       return {
-          isLoading: true,
-          isError: true
+          loading: false,
+          error: error
         };
     });
   }
@@ -40,10 +40,12 @@ export default class PentaxAPI {
       .then( jsonData => {
         console.log('jsonData', jsonData);
         let photos = Array.apply(null, jsonData.dirs).reduce((dirs, dir) => {
-          return dirs.concat(Array.apply(null, dir.files).reduce((files, b) => {
-            let path = url+'/'+dir.name+'/'+b;
+          return dirs.concat(Array.apply(null, dir.files).reduce((files, file) => {
+            let path = url+'/'+dir.name+'/'+file;
             return files.concat({
-                id: b,
+                id: dir.name+'/'+file,
+                dir: dir.name,
+                file: file,
                 src: path,
                 view: path+'?size=view',
                 thumb: path+'?size=thumb',  });
@@ -51,7 +53,7 @@ export default class PentaxAPI {
         }, []);
 
         return {
-          isLoading: false,
+          loading: false,
           dirs: jsonData.dirs,
           photos: photos,
         };
@@ -59,48 +61,51 @@ export default class PentaxAPI {
     .catch( error => {
       console.error('Fetch error ' + error)
       return {
-          isLoading: false,
-          isError: true
+          loading: false,
+          error: error
         };
     });
   }
 
-  infoPhoto(path, filename) {
+  infoPhoto(id) {
     console.log('PentaxAPI.infoPhoto');
 
-    var url = this.api+'/v1/photos/'+path+'/'+filename+'/info';
+    var url = this.api+'/v1/photos/'+id+'/info';
     return fetch(url)
       .then( response => response.json() )
-      .then( response => {
-        return jsonData;
+      .then( jsonData => {
+        console.log(jsonData);
+        return {
+          infoPhoto: jsonData
+        };
       })
     .catch( error => {
       console.error('Fetch error ' + error)
       return {
-          isLoading: false,
-          isError: true
+          loading: false,
+          error: error
         };
     });
   }
 
-  downloadPhoto(path, filename) {
+  downloadPhoto(id) {
     console.log('PentaxAPI.downloadPhoto');
 
-    var url = this.api+'/v1/photos/'+path+'/'+filename+'?size=full';
+    var url = this.api+'/v1/photos/'+id+'?size=full';
     return fetch(url)
       .then( response => {
         // TODO, progress bar?
 
         return {
-          isLoading: false,
-          src: response.data
+          loading: false,
+          downloadLink: response.data
         };
       })
     .catch( error => {
       console.error('Fetch error ' + error)
       return {
-          isLoading: false,
-          isError: true
+          loading: false,
+          error: error
         };
     });
   }
