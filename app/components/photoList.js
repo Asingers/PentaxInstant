@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity,
-  CameraRoll
+  TouchableHighlight
 } from 'react-native';
 import Image from 'react-native-image-progress';
 import PhotoGrid from 'react-native-photo-grid';
@@ -18,50 +16,54 @@ export default class PhotoList extends Component {
     super(props);
     this.state = {
       camera: {},
-      dirs: {},
-      photos: {}
+      dirs: [],
+      photos: [],
+      showItem: false
     }
   }
 
-  render(state) {
+  render() {
     console.log('PhotoList.render');
+    var {photos, camera} = this.state;
+    console.log(photos, camera);
+
     return (
-      <PhotoGrid style={ styles.photoContainer }
-        data = { state.photos }
+      <PhotoGrid ref="PhotoList"
+        style={ styles.photoContainer }
+        data = { photos }
         itemsPerRow = { 3 }
         itemMargin = { 1 }
-        renderHeader = { () => this.renderHeader(state) }
-        renderItem = { this.renderPhotoPreview }
+        renderHeader = { () => this.renderHeader(camera, photos.length) }
+        renderItem = { this.renderPhoto }
+        setState = { this.setState }
       ></PhotoGrid>
     );
   }
 
-  renderHeader(state) {
+  renderHeader(camera, num_photos) {
     return (
       <View style={ styles.appHeader }>
-        <Text style={{alignSelf: 'flex-start'}}>{state.camera.model}</Text>
-        <Text style={{alignSelf: 'flex-end'}}>{state.photos.length} Photos</Text>
+        <Text style={{alignSelf: 'flex-start'}}>{camera.model}</Text>
+        <Text style={{alignSelf: 'flex-end'}}>{num_photos} Photos</Text>
       </View>
     );
   }
 
-  renderPhotoPreview(item, itemSize) {
-    console.log('PhotoList.renderPhotoPreview', item);
+  renderPhoto(item, itemSize) {
+    console.log('PhotoList.renderPhoto', item);
     return(
-      <TouchableOpacity
+      <TouchableHighlight
         key = { item.id }
         style = {{ width: itemSize, height: itemSize }}
         onPress = { () => {
-          // Do Something
+          this.setState({showItem: item});
         }}>
         <Image
           resizeMode = "cover"
           style = {{ flex: 1 }}
-          source = {{
-            uri: item.src
-          }}
+          source = {{ uri: item.thumb }}
         />
-      </TouchableOpacity>
+      </TouchableHighlight>
     )
   }
 }
