@@ -74,7 +74,7 @@ export default class PentaxInstant extends Component {
       return this.renderLoadingMessage();
     else
       if (isError)
-        return this.renderErrorMessage();
+        return this.renderConnectFailedMessage();
       else
         return this.renderResults();
   }
@@ -92,10 +92,24 @@ export default class PentaxInstant extends Component {
     );
   }
 
-  renderErrorMessage() {
+  renderConnectFailedMessage() {
+    if (__DEV__) {
+      let steps = [
+        'Make sure the mock-api server is running',
+        'at '+this.api,
+        'python mock-api/server.py'
+      ];
+    } else {
+      let steps = [
+        'Make sure the Pentax WiFi is on',
+        'and your phone is connected to the network.'
+      ];
+    }
+    
     return (
       <View style={styles.loadingContainer}>
         <Text style={{color: 'red'}}>Unable to Contact Camera</Text>
+        <Text style={{color: 'white'}}>steps.join('<br />')</Text>
       </View>
     );
   }
