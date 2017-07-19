@@ -10,6 +10,7 @@ import {
 import PentaxAPI from './lib/pentaxAPI';
 import LoadingScreen from './components/loadingScreen';
 import CameraBrowser from './components/cameraBrowser';
+import PhotoInfo from './components/photoInfo';
 import styles from './styles';
 
 export default class PentaxInstant extends Component {
@@ -44,7 +45,7 @@ export default class PentaxInstant extends Component {
   showPhotoInfo(photo) {
     // console.log('showPhotoInfo', photo);
     window.pentaxAPI.infoPhoto(photo.id).then( (state) => {
-      // console.log('infoPhoto state', state);
+      console.log('infoPhoto state', state);
       state.viewPhoto = photo;
       return this.setState(state);
     })
@@ -62,8 +63,14 @@ export default class PentaxInstant extends Component {
       return (
         <View style={styles.appContainer}>
           <CameraBrowser
-            media={this.state.photos}>
+            media={this.state.photos}
+            showInfo={this.showPhotoInfo.bind(this)}>
           </CameraBrowser>
+          <PhotoInfo 
+            displayed={true}
+            height={120}
+            infoPhoto={this.state.infoPhoto}
+          />
         </View>
       )
     }

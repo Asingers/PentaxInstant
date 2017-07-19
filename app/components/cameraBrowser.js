@@ -29,7 +29,8 @@ export default class CameraBrowser extends Component {
   }
 
   _onLongPress(media, index) {
-    console.log('_onLongPress', media, index);
+    console.log('_onLongPress', media);
+    this.props.showInfo(media);
   }
 
   render() {
@@ -46,7 +47,7 @@ export default class CameraBrowser extends Component {
         enableGrid={true}
         useCircleProgress={false}
         //onDetail={this._onDetail}
-        onPhotoLongPress={this._onLongPress}
+        onPhotoLongPress={this._onLongPress.bind(this)}
         // delayLongPress={500}
         onActionButton={this._onActionButton}
       />
