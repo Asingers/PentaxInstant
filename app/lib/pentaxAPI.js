@@ -42,11 +42,10 @@ export default class PentaxAPI {
             let path = url+'/'+dir.name+'/'+file;
             return files.concat({
                 id: dir.name+'/'+file,
-                dir: dir.name,
-                file: file,
-                src: path,
-                view: path+'?size=view',
-                thumb: path+'?size=thumb',  });
+                caption: file,
+                thumb: path+'?size=thumb',
+                photo: path+'?size=view',
+                full: path+'?size=full'  });
           }, []));
         }, []);
 
