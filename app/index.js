@@ -16,14 +16,8 @@ export default class PentaxInstant extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSplash: true,
-      loading: '',
-      camera: {},
-      photos: [],
-      dirs: [],
+      media: [],
       infoPhoto: {},
-      viewPhoto: {},
-      downloadLink: ''
     }
 
     if (__DEV__) {
@@ -35,15 +29,13 @@ export default class PentaxInstant extends Component {
   }
 
   componentDidMount() {
-    // console.log('app.didMount', this.state);
+    console.log('app.didMount', this.state);
 
     window.pentaxAPI.cameraInfo().then( (state) => {
-      // console.log('cameraInfo', state);
-      state.showSplash = false;
       return this.setState(state);
     }).then( (state) => {
       return window.pentaxAPI.listPhotos().then( (state) => {
-        // console.log('listPhotos', state);
+        console.log('listPhotos', state);
         return this.setState(state);
       })
     })
@@ -53,7 +45,6 @@ export default class PentaxInstant extends Component {
     // console.log('showPhotoInfo', photo);
     window.pentaxAPI.infoPhoto(photo.id).then( (state) => {
       // console.log('infoPhoto state', state);
-      state.showSplash = false;
       state.viewPhoto = photo;
       return this.setState(state);
     })
@@ -71,10 +62,7 @@ export default class PentaxInstant extends Component {
       return (
         <View style={styles.appContainer}>
           <CameraBrowser
-            photos={this.state.photos}
-            dirs={this.state.dirs}
-            camera={this.state.camera}
-            onClickItem={this.showPhotoInfo.bind(this)}>
+            media={this.state.photos}>
           </CameraBrowser>
         </View>
       )

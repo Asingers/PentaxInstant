@@ -11,17 +11,6 @@ export default class CameraBrowser extends Component {
     super(props);
   }
 
-  media() {
-    // transform array of "photo" objects to "media"
-    return Array.apply(null, this.props.photos).map((photo) => {
-      return {
-        thumb: photo.thumb,
-        photo: photo.view,
-        caption: photo.file,
-      }
-    });
-  }
-
   _onActionButton(media, index) {
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showShareActionSheetWithOptions({
@@ -35,21 +24,31 @@ export default class CameraBrowser extends Component {
     }
   }
 
+  _onDetail(media, index) {
+    console.log('_onDetail', media, index);
+  }
+
+  _onLongPress(media, index) {
+    console.log('_onLongPress', media, index);
+  }
+
   render() {
     return (
       <PhotoBrowser
-        mediaList={this.media()}
+        mediaList={this.props.media}
         initialIndex={0}
         displayNavArrows={true}
         displayTopBar={true}
         displaySelectionButtons={false}
         displayActionButton={true}
+        displayDetailButton={true}
         startOnGrid={true}
         enableGrid={true}
         useCircleProgress={false}
-        onSelectionChanged={this._onSelectionChanged}
+        //onDetail={this._onDetail}
+        onPhotoLongPress={this._onLongPress}
+        // delayLongPress={500}
         onActionButton={this._onActionButton}
-      
       />
     );
   }
